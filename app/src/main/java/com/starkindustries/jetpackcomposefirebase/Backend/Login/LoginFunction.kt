@@ -25,3 +25,8 @@ fun LoginFunction(context: Context,email:String,password:String,navController: N
         Log.d("errorMessage",it.message.toString())
     }
 }
+
+fun signout(){
+    var auth = FirebaseAuth.getInstance()
+    auth.signOut()
+}

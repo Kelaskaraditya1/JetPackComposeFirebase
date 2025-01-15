@@ -7,4 +7,6 @@ sealed class Routes(var route:String) {
     object LoginScreen:Routes(Keys.LOGIN_SCREEN_ROUTE)
     object SignupScreen:Routes(Keys.SIGNUP_SCREEN_ROUTE)
     object DashboardScreen:Routes(Keys.DASHBOARD_SCREEN_ROUTE)
+    object HomeScreen:Routes(Keys.HOME_SCREEN_ROUTE)
+    object ProfileScreen:Routes(Keys.PROFILE_SCREEN_ROUTE)
 }
