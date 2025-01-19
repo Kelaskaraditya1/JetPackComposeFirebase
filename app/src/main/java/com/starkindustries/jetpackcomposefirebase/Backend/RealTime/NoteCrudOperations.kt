@@ -1,13 +1,6 @@
-package com.starkindustries.jetpackcomposefirebase.Backend.FireStore
+package com.starkindustries.jetpackcomposefirebase.Backend.RealTime
 
-import android.content.Context
-import android.drm.DrmManagerClient.OnEventListener
-import android.media.MediaPlayer.OnCompletionListener
 import android.util.Log
-import android.widget.NumberPicker.OnValueChangeListener
-import android.widget.Toast
-import androidx.compose.ui.platform.LocalContext
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -15,6 +8,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.starkindustries.jetpackcomposefirebase.Backend.Data.NotesRow
 import com.starkindustries.jetpackcomposefirebase.Keys.Keys
+import com.google.firebase.firestore.FirebaseFirestore
+import com.starkindustries.jetpackcomposefirebase.Backend.Data.User
 
 class RealTimeDatabase {
 
@@ -104,5 +99,38 @@ class RealTimeDatabase {
                     }
             }
         }
+
+
+
+        // Function to fetch user data by UID
+        fun fetchUserByUid(uid: String, onResult: (User?) -> Unit) {
+            val firestore = FirebaseFirestore.getInstance()
+
+            // Access the document with the specified UID in the "users" collection
+            firestore.collection("users").document(uid)
+                .get()
+                .addOnSuccessListener { document ->
+                    if (document != null && document.exists()) {
+                        // Map Firestore document fields to the User data class
+                        val user = User(
+                            name = document.getString("name"),
+                            userName = document.getString("userName"),
+                            email = document.getString("email"),
+                            password = document.getString("password"),
+                            profileImageUri = document.getString("profileImageUri")
+                        )
+                        onResult(user) // Return the User object
+                    } else {
+                        Log.d("FetchUserByUid", "No user found with UID: $uid")
+                        onResult(null) // No document found
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.d("FetchUserByUid", "Error fetching user: ${exception.message}")
+                    onResult(null) // Handle error case
+                }
+        }
+
+
     }
 }

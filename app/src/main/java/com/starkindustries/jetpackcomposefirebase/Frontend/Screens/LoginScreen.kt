@@ -1,7 +1,12 @@
 package com.starkindustries.jetpackcomposefirebase.Frontend.Screens
 
 import android.content.Context
+import android.net.Uri
 import android.widget.ImageButton
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,7 +16,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,8 +34,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -40,7 +49,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.starkindustries.jetpackcomposefirebase.Backend.Authentication.Login.LoginFunction
+import coil.compose.rememberAsyncImagePainter
+import com.starkindustries.jetpackcomposefirebase.Backend.Authentication.Authentication
 import com.starkindustries.jetpackcomposefirebase.Frontend.Routes.Routes
 import com.starkindustries.jetpackcomposefirebase.Keys.Keys
 import com.starkindustries.jetpackcomposefirebase.R
@@ -68,7 +78,7 @@ fun LoginScreen(navController: NavController){
     Text(text = "Login Screen"
         , modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 50.dp)
+            .padding(top = 100.dp)
         , textAlign = TextAlign.Center
         , fontWeight = FontWeight.W500
         , fontSize = 25.sp)
@@ -147,7 +157,7 @@ fun LoginScreen(navController: NavController){
                 .fillMaxWidth()
             , contentAlignment = Alignment.Center){
                 Button(onClick = {
-                LoginFunction(context = context,email,password,navController)
+                    Authentication.LoginFunction(context = context,email,password,navController)
                 }
                     , shape = RectangleShape
                     , modifier = Modifier
@@ -164,7 +174,7 @@ fun LoginScreen(navController: NavController){
             Row(modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
-                    navController.navigate(Routes.SignupScreen.route){
+                    navController.navigate(Routes.SignupScreen.route) {
                         popUpTo(0)
                     }
                 }
@@ -186,8 +196,11 @@ fun LoginScreen(navController: NavController){
 
 }
 
+
+
+
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
 fun LoginScreenPreview(){
-    LoginScreen(rememberNavController())
+LoginScreen(navController = rememberNavController())
 }

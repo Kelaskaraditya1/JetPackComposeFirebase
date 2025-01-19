@@ -1,6 +1,14 @@
 package com.starkindustries.jetpackcomposefirebase.Frontend.Screens
 
 import android.content.Context
+import android.net.Uri
+import android.util.Log
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -29,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -40,7 +50,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.starkindustries.jetpackcomposefirebase.Backend.Authentication.Signup.Signup
+import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
+import com.starkindustries.jetpackcomposefirebase.Backend.Authentication.Authentication
+import com.starkindustries.jetpackcomposefirebase.Frontend.Compose.CircularImageCompose
+import com.starkindustries.jetpackcomposefirebase.Frontend.Navigation.Navigation
 import com.starkindustries.jetpackcomposefirebase.Frontend.Routes.Routes
 import com.starkindustries.jetpackcomposefirebase.Keys.Keys
 import com.starkindustries.jetpackcomposefirebase.R
@@ -68,6 +82,14 @@ fun SignupScreen(navController: NavController){
         mutableStateOf("")
     }
 
+    var imageUri by remember{
+        mutableStateOf<Uri?>(null)
+    }
+
+    var galleryLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.PickVisualMedia()) {uri->
+        imageUri=uri
+    }
+
     var context = LocalContext.current.applicationContext
     var sharedPreferences = context.getSharedPreferences(Keys.LOGIN_STATUS, Context.MODE_PRIVATE)
     var editor = sharedPreferences.edit()
@@ -75,21 +97,66 @@ fun SignupScreen(navController: NavController){
     Text(text = "Signup Screen"
         , modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 50.dp)
+            .padding(top = 80.dp)
         , textAlign = TextAlign.Center
         , fontWeight = FontWeight.W500
         , fontSize = 25.sp)
 
     Spacer(modifier = Modifier
-        .height(100.dp))
+        .height(80.dp))
+
 
     Box(modifier = Modifier
         .fillMaxSize()
         .padding(start = 10.dp, end = 10.dp)
         , contentAlignment = Alignment.Center){
 
-        Column {
+        Column(modifier = Modifier
+            .fillMaxWidth()) {
 
+
+            Box(modifier = Modifier
+                .height(200.dp)
+                .fillMaxWidth()
+            , contentAlignment = Alignment.Center){
+
+                if(imageUri!=null){
+                    Box(modifier = Modifier
+                        .padding(20.dp)
+                        .clip(CircleShape)){
+                        Image(painter = rememberAsyncImagePainter(imageUri)
+                            , contentDescription =""
+                            , modifier = Modifier
+                                .clip(CircleShape)
+                                .size(160.dp)
+                                .border(width = 1.dp, shape = CircleShape, color = Color.Black)
+                            , contentScale = ContentScale.Crop)
+                    }
+
+                }else{
+                    Image(painter = painterResource(id = R.drawable.profile)
+                        , contentDescription =""
+                        , modifier = Modifier
+                            .fillMaxSize())
+                }
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 40.dp, end = 110.dp)
+                    , contentAlignment = Alignment.BottomEnd){
+                    Image(painter = painterResource(id = R.drawable.plus)
+                        , contentDescription = ""
+                        , modifier = Modifier
+                            .size(40.dp)
+                            .clickable {
+                                galleryLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                            })
+
+                }
+
+            }
+
+            Spacer(modifier = Modifier
+                .height(20.dp))
             TextField(value = name, onValueChange ={
                 name = it
             }
@@ -207,7 +274,9 @@ fun SignupScreen(navController: NavController){
                 .fillMaxWidth()
                 , contentAlignment = Alignment.Center){
                 Button(onClick = {
-                    Signup(context,email,password,navController)
+                    Authentication.Signup(context,email,password,username,imageUri.toString(),navController)
+                    editor.putString(Keys.PROFILE_PIC_URI,imageUri.toString())
+                    editor.commit()
                 }
                     , shape = RectangleShape
                     , modifier = Modifier
@@ -224,7 +293,7 @@ fun SignupScreen(navController: NavController){
             Row(modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
-                    navController.navigate(Routes.LoginScreen.route){
+                    navController.navigate(Routes.LoginScreen.route) {
                         popUpTo(0)
                     }
                 }

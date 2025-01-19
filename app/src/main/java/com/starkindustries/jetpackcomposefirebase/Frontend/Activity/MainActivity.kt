@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
+import com.starkindustries.jetpackcomposefirebase.Frontend.Compose.CircularImageCompose
 import com.starkindustries.jetpackcomposefirebase.Frontend.Navigation.Navigation
 import com.starkindustries.jetpackcomposefirebase.ui.theme.JetPackComposeFirebaseTheme
 

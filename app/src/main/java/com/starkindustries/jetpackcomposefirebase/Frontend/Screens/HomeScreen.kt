@@ -32,7 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.firebase.auth.FirebaseAuth
 import com.starkindustries.jetpackcomposefirebase.Backend.Data.NotesRow
-import com.starkindustries.jetpackcomposefirebase.Backend.FireStore.RealTimeDatabase
+import com.starkindustries.jetpackcomposefirebase.Backend.RealTime.RealTimeDatabase
 
 import com.starkindustries.jetpackcomposefirebase.Frontend.Compose.NoteRowCompose
 

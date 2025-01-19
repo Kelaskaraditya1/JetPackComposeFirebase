@@ -41,9 +41,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.starkindustries.jetpackcomposefirebase.Backend.Utility.dataRowItem
 import com.starkindustries.jetpackcomposefirebase.Backend.Data.NotesRow
-import com.starkindustries.jetpackcomposefirebase.Backend.FireStore.RealTimeDatabase
+import com.starkindustries.jetpackcomposefirebase.Backend.RealTime.RealTimeDatabase
 
 @Composable
 fun NoteRowCompose(

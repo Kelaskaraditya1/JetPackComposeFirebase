@@ -10,5 +10,6 @@ class Keys {
         const val HOME_SCREEN_ROUTE = "HOME_SCREEN"
         const val PROFILE_SCREEN_ROUTE = "PROFILE_SCREEN"
         const val NOTES="NOTES"
+        const val PROFILE_PIC_URI="PROFILE_PIC_URI"
     }
 }

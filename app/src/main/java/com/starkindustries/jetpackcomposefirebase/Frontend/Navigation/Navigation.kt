@@ -1,6 +1,7 @@
 package com.starkindustries.jetpackcomposefirebase.Frontend.Navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.Navigation
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -15,6 +16,9 @@ import com.starkindustries.jetpackcomposefirebase.Frontend.Screens.SplashScreen
 
 @Composable
 fun Navigation(){
+
+    var context = LocalContext.current.applicationContext
+
     var navController = rememberNavController()
     NavHost(navController = navController, startDestination =Routes.SplashScreen.route ){
         composable(Routes.SplashScreen.route){
@@ -33,7 +37,7 @@ fun Navigation(){
             HomeScreen()
         }
         composable(Routes.ProfileScreen.route){
-            ProfileScreen()
+            ProfileScreen(navController = navController)
         }
     }
 }

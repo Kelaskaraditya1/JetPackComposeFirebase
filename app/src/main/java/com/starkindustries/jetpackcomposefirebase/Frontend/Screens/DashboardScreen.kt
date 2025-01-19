@@ -1,6 +1,7 @@
 package com.starkindustries.jetpackcomposefirebase.Frontend.Screens
 
 import android.widget.ImageButton
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -43,7 +45,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.auth.FirebaseAuth
-import com.starkindustries.jetpackcomposefirebase.Backend.Authentication.Login.signout
 import com.starkindustries.jetpackcomposefirebase.Backend.Utility.tabRowItems
 import com.starkindustries.jetpackcomposefirebase.Frontend.Routes.Routes
 
@@ -58,8 +59,8 @@ fun DashboardScreen(navController: NavController) {
     val pagerState = rememberPagerState {
         tabRowItems().size
     }
-    
 
+    val activity = LocalContext.current as? ComponentActivity
 
     LaunchedEffect(selectedTab) {
         pagerState.scrollToPage(selectedTab)
@@ -84,7 +85,7 @@ fun DashboardScreen(navController: NavController) {
                 },
                 navigationIcon = {
                     IconButton(onClick = {
-                        // Handle back navigation
+                        activity?.finish()
                     }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
@@ -157,7 +158,7 @@ fun DashboardScreen(navController: NavController) {
                             startDestination = Routes.ProfileScreen.route
                         ) {
                             composable(Routes.ProfileScreen.route) {
-                                ProfileScreen()
+                                ProfileScreen(navController = navController)
                             }
                         }
                     }
