@@ -1,4 +1,4 @@
-package com.starkindustries.jetpackcomposefirebase.Backend.Signup
+package com.starkindustries.jetpackcomposefirebase.Backend.Authentication.Signup
 
 import android.content.Context
 import android.util.Log

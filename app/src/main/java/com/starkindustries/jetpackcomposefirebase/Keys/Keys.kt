@@ -9,5 +9,6 @@ class Keys {
         const val LOGIN_STATUS = "LOGIN_STATUS"
         const val HOME_SCREEN_ROUTE = "HOME_SCREEN"
         const val PROFILE_SCREEN_ROUTE = "PROFILE_SCREEN"
+        const val NOTES="NOTES"
     }
 }

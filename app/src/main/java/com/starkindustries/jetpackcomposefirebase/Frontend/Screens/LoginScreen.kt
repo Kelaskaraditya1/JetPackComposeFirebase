@@ -40,7 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.starkindustries.jetpackcomposefirebase.Backend.Login.LoginFunction
+import com.starkindustries.jetpackcomposefirebase.Backend.Authentication.Login.LoginFunction
 import com.starkindustries.jetpackcomposefirebase.Frontend.Routes.Routes
 import com.starkindustries.jetpackcomposefirebase.Keys.Keys
 import com.starkindustries.jetpackcomposefirebase.R

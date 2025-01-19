@@ -43,7 +43,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.auth.FirebaseAuth
-import com.starkindustries.jetpackcomposefirebase.Backend.Login.signout
+import com.starkindustries.jetpackcomposefirebase.Backend.Authentication.Login.signout
 import com.starkindustries.jetpackcomposefirebase.Backend.Utility.tabRowItems
 import com.starkindustries.jetpackcomposefirebase.Frontend.Routes.Routes
 
