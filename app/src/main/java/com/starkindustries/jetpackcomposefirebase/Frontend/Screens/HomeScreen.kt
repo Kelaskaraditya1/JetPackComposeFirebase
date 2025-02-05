@@ -20,6 +20,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -30,31 +31,37 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.google.firebase.auth.FirebaseAuth
+import com.starkindustries.jetpackcomposefirebase.Backend.Api.NotesApi.RetrofitInstance
 import com.starkindustries.jetpackcomposefirebase.Backend.Data.NotesRow
-import com.starkindustries.jetpackcomposefirebase.Backend.RealTime.RealTimeDatabase
 
 import com.starkindustries.jetpackcomposefirebase.Frontend.Compose.NoteRowCompose
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 @Composable
 fun HomeScreen() {
-
     var dialogState by remember { mutableStateOf(false) }
     var title by remember { mutableStateOf("") }
     var timeStamp by remember { mutableStateOf("") }
     var content by remember { mutableStateOf("") }
-
     val context = LocalContext.current
-    val user = FirebaseAuth.getInstance().currentUser
+    val notes = remember { mutableStateOf(emptyList<NotesRow>()) } // State for notes
 
-    // Notes state
-    val notes = remember { mutableStateOf(emptyList<NotesRow>()) }
-
-    // Fetch notes once
-    if (user != null) {
-        RealTimeDatabase.getNotes(user) { fetchedNotes ->
-            notes.value = fetchedNotes
+    // Fetch notes from the API
+    LaunchedEffect(Unit) {
+        val response = try {
+            RetrofitInstance.api.getNotes() // API call
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+        if (response != null && response.isSuccessful) {
+            notes.value = response.body() ?: emptyList() // Update state with API data
+        } else {
+            
+            Toast.makeText(context, "Failed to fetch notes", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -64,23 +71,22 @@ fun HomeScreen() {
         // Expanded state for notes
         val expandedStates = remember { mutableStateMapOf<Int, Boolean>() }
 
-        // Display notes
+        // Display notes in a LazyColumn
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             items(notes.value) { note ->
-                if (user != null) {
-                    NoteRowCompose(
-                        notesRow = note,
-                        isExpanded = expandedStates[note.id ?: -1] ?: false, // Handle nullable IDs
-                        onExpandToggle = { isExpanded ->
-                            expandedStates[note.id ?: -1] = isExpanded
-                        }, onDelete = {
-                            if (user != null) {
-                                RealTimeDatabase.deleteNote(it,user)
-                            }
-                        }, user = user,
-                        context
-                    )
-                }
+                NoteRowCompose(
+                    notesRow = note,
+                    isExpanded = expandedStates[note.id ?: -1] ?: false,
+                    onExpandToggle = { isExpanded ->
+                        expandedStates[note.id ?: -1] = isExpanded
+                    },
+                    onDelete = {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            // Add delete logic if necessary
+                        }
+                    },
+                    context = context
+                )
             }
         }
 
@@ -100,7 +106,7 @@ fun HomeScreen() {
             }
         }
 
-        // AlertDialog
+        // AlertDialog for adding new notes
         if (dialogState) {
             AlertDialog(
                 onDismissRequest = { dialogState = false },
@@ -134,13 +140,10 @@ fun HomeScreen() {
                                 timeStamp = timeStamp,
                                 content = content
                             )
-                            if (user != null) {
-                                RealTimeDatabase.insertNote(user, note)
-                                // Reset fields
-                                title = ""
-                                timeStamp = ""
-                                content = ""
-                            }
+                            // Add your backend insertion logic here
+                            title = ""
+                            timeStamp = ""
+                            content = ""
                             dialogState = false
                         } else {
                             Toast.makeText(
@@ -162,6 +165,8 @@ fun HomeScreen() {
         }
     }
 }
+
+
 
 
 @Composable

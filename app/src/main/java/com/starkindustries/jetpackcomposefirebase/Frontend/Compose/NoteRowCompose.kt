@@ -50,7 +50,7 @@ fun NoteRowCompose(
     isExpanded: Boolean,
     onExpandToggle: (Boolean) -> Unit,
     onDelete:(noteId:String)->Unit,
-    user:FirebaseUser,
+    user:FirebaseUser?=FirebaseAuth.getInstance().currentUser,
     context:Context) {
 
     var updateDialouge by remember{
@@ -214,7 +214,9 @@ fun NoteRowCompose(
                             noteId = notesRow.noteId // Ensure the noteId is preserved
                         )
                         if (note.noteId != null) {
-                            RealTimeDatabase.updateNote(user, note, note.noteId!!)
+                            if (user != null) {
+                                RealTimeDatabase.updateNote(user, note, note.noteId!!)
+                            }
                         } else {
                             Toast.makeText(
                                 context,

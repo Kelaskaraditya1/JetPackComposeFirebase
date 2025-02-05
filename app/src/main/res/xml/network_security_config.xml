@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- Allow cleartext traffic for local debugging -->
+    <domain-config cleartextTrafficPermitted="true">
+        <!-- Emulator: Use the alias 10.0.2.2 to access the host machine -->
+        <domain includeSubdomains="true">10.0.2.2</domain>
+        <!-- Physical Device: Replace with your local network IP -->
+        <domain includeSubdomains="true">192.168.0.102</domain>
+    </domain-config>
+
+    <!-- Enforce HTTPS for production backend -->
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">notesappbackend-9.onrender.com</domain>
+    </domain-config>
+</network-security-config>
+

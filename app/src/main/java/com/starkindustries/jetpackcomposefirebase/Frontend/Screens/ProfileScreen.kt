@@ -2,6 +2,7 @@ package com.starkindustries.jetpackcomposefirebase.Frontend.Screens
 
 import android.content.Context
 import android.net.Uri
+import android.widget.Space
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -43,6 +44,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.rpc.context.AttributeContext.Auth
 import com.starkindustries.jetpackcomposefirebase.Backend.Authentication.Authentication
 import com.starkindustries.jetpackcomposefirebase.Backend.RealTime.RealTimeDatabase
@@ -51,29 +53,28 @@ import com.starkindustries.jetpackcomposefirebase.Keys.Keys
 import com.starkindustries.jetpackcomposefirebase.R
 
 @Composable
-fun ProfileScreen(navController: NavController) {
+fun ProfileScreen(username:String,name:String,navController: NavController) {
     val context = LocalContext.current
     val sharedPreferences = context.getSharedPreferences(Keys.LOGIN_STATUS, Context.MODE_PRIVATE)
     val editor = sharedPreferences.edit()
 
+
     // State variables
-    var username by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
     var imageUri by remember { mutableStateOf("") }
 
     // Fetch user data
-    val firebaseUser = FirebaseAuth.getInstance().currentUser
-    firebaseUser?.uid?.let { uid ->
-        LaunchedEffect(uid) {
-            RealTimeDatabase.fetchUserByUid(uid) { user ->
-                if (user != null) {
-                    username = user.userName.orEmpty()
-                    email = user.email.orEmpty()
-                    imageUri = user.profileImageUri.orEmpty()
-                }
-            }
-        }
-    }
+//    val firebaseUser = FirebaseAuth.getInstance().currentUser
+//    firebaseUser?.uid?.let { uid ->
+//        LaunchedEffect(uid) {
+//            RealTimeDatabase.fetchUserByUid(uid) { user ->
+//                if (user != null) {
+//                    username = user.userName.orEmpty()
+//                    email = user.email.orEmpty()
+//                    imageUri = user.profileImageUri.orEmpty()
+//                }
+//            }
+//        }
+//    }
 
     Column(
         modifier = Modifier
@@ -92,7 +93,7 @@ fun ProfileScreen(navController: NavController) {
                     painter = rememberAsyncImagePainter(model = imageUri),
                     contentDescription = "",
                     modifier = Modifier
-                        .size(200.dp)
+                        .size(180.dp)
                         .clip(CircleShape)
                         .border(width = 1.dp, color = Color.Gray, shape = CircleShape),
                     contentScale = ContentScale.Crop
@@ -114,8 +115,42 @@ fun ProfileScreen(navController: NavController) {
         Spacer(modifier = Modifier.height(16.dp))
 
         // User Info
-        Text(text = "Username: $username")
-        Text(text = "Email: $email")
+        Text(text = name
+        , fontSize = 25.sp
+        , fontWeight = FontWeight.W500
+        , modifier = Modifier
+                .fillMaxWidth()
+        , textAlign = TextAlign.Center)
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        Text(text = username,
+            fontSize = 18.sp
+        , fontWeight = FontWeight.W400
+        , modifier = Modifier
+                .fillMaxWidth()
+        , textAlign = TextAlign.Center)
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 10.dp)
+            , contentAlignment = Alignment.Center){
+            Button(onClick = {
+                var auth = FirebaseAuth.getInstance()
+                auth.signOut()
+                editor.putBoolean(Keys.LOGIN_STATUS,false)
+                editor.apply()
+                navController.navigate(route = Routes.LoginScreen.route){
+                    popUpTo(0)
+                }
+            }) {
+                Text(text = "Logout"
+                    , fontSize = 18.sp)
+            }
+        }
+
     }
 }
 
@@ -123,5 +158,5 @@ fun ProfileScreen(navController: NavController) {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 private fun ProfileScreenPreview() {
-    ProfileScreen(rememberNavController())
+    ProfileScreen("kelaskaraditya1","Aditya Kelaskar",rememberNavController())
 }

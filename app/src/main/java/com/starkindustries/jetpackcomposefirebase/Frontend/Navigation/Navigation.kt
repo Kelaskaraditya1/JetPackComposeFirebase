@@ -37,7 +37,7 @@ fun Navigation(){
             HomeScreen()
         }
         composable(Routes.ProfileScreen.route){
-            ProfileScreen(navController = navController)
+            ProfileScreen(navController = navController,name="Aditya Kelaskar", username = "kelaskaraditya1")
         }
     }
 }

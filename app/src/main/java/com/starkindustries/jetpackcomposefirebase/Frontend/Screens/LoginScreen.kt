@@ -2,6 +2,7 @@ package com.starkindustries.jetpackcomposefirebase.Frontend.Screens
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import android.widget.ImageButton
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -31,6 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,16 +52,20 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
+import com.starkindustries.jetpackcomposefirebase.Backend.Api.AuthApi.AuthApiInstance
+import com.starkindustries.jetpackcomposefirebase.Backend.Api.AuthApi.Profile
 import com.starkindustries.jetpackcomposefirebase.Backend.Authentication.Authentication
 import com.starkindustries.jetpackcomposefirebase.Frontend.Routes.Routes
 import com.starkindustries.jetpackcomposefirebase.Keys.Keys
 import com.starkindustries.jetpackcomposefirebase.R
+import kotlinx.coroutines.launch
+import okhttp3.Route
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(navController: NavController){
 
-    var email by remember{
+    var username by remember{
         mutableStateOf("")
     }
 
@@ -70,6 +76,8 @@ fun LoginScreen(navController: NavController){
     var passwoordVisible by remember {
         mutableStateOf(false)
     }
+
+    var coroutineScope = rememberCoroutineScope()
 
     var context = LocalContext.current.applicationContext
     var sharedPreferences = context.getSharedPreferences(Keys.LOGIN_STATUS, Context.MODE_PRIVATE)
@@ -92,11 +100,11 @@ fun LoginScreen(navController: NavController){
     , contentAlignment = Alignment.Center){
 
         Column {
-            TextField(value = email, onValueChange ={
-                email = it
+            TextField(value = username, onValueChange ={
+                username = it
             }
                 , label = {
-                    Text(text = "Email"
+                    Text(text = "Username"
                         , fontSize = 18.sp
                         , fontWeight = FontWeight.W500
                         , color = Color.Black)
@@ -157,7 +165,32 @@ fun LoginScreen(navController: NavController){
                 .fillMaxWidth()
             , contentAlignment = Alignment.Center){
                 Button(onClick = {
-                    Authentication.LoginFunction(context = context,email,password,navController)
+
+                    var profile = Profile(username = username, password = password)
+                    Log.d("LOGIN_DEBUG", "Attempting login with Username: $username, Password: $password")
+
+                    coroutineScope.launch {
+
+                        var profile = Profile(username=username, password = password)
+                        try{
+                            var response = AuthApiInstance.api.login(profile)
+                            if(response.isSuccessful){
+                                navController.navigate(Routes.DashboardScreen.route){
+                                    popUpTo(0)
+                                }
+                                Log.d("LOGIN_SUCCESS",response.body().toString())
+                                editor.putBoolean(Keys.LOGIN_STATUS, true)
+                                editor.commit()
+                            }else{
+                                Log.d("LOGIN_ERROR",response.body().toString())
+                            }
+                        }catch (e:Exception){
+                            e.printStackTrace()
+                        }
+
+                    }
+
+
                 }
                     , shape = RectangleShape
                     , modifier = Modifier

@@ -11,5 +11,7 @@ class Keys {
         const val PROFILE_SCREEN_ROUTE = "PROFILE_SCREEN"
         const val NOTES="NOTES"
         const val PROFILE_PIC_URI="PROFILE_PIC_URI"
+        const val BASE_URL = "https://notesappbackend-9.onrender.com/"
+
     }
 }

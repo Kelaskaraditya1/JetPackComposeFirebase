@@ -33,7 +33,7 @@ fun SplashScreen(navController: NavController){
 
     LaunchedEffect(Unit) {
         delay(1000)
-        if(sharedPreferences.getBoolean(Keys.LOGIN_STATUS,false)&&user!=null){
+        if(sharedPreferences.getBoolean(Keys.LOGIN_STATUS,false)){
             navController.navigate(Routes.DashboardScreen.route){
                 popUpTo(0)
             }

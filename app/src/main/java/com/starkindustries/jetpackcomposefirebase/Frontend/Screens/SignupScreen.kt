@@ -20,7 +20,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -32,6 +34,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,12 +55,17 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
+import com.starkindustries.jetpackcomposefirebase.Backend.Api.AuthApi.AuthApiInstance
+import com.starkindustries.jetpackcomposefirebase.Backend.Api.AuthApi.Profile
 import com.starkindustries.jetpackcomposefirebase.Backend.Authentication.Authentication
 import com.starkindustries.jetpackcomposefirebase.Frontend.Compose.CircularImageCompose
 import com.starkindustries.jetpackcomposefirebase.Frontend.Navigation.Navigation
 import com.starkindustries.jetpackcomposefirebase.Frontend.Routes.Routes
 import com.starkindustries.jetpackcomposefirebase.Keys.Keys
 import com.starkindustries.jetpackcomposefirebase.R
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -90,6 +98,10 @@ fun SignupScreen(navController: NavController){
         imageUri=uri
     }
 
+    var coRoutineScope = rememberCoroutineScope()
+
+    var scrollState = rememberScrollState()
+
     var context = LocalContext.current.applicationContext
     var sharedPreferences = context.getSharedPreferences(Keys.LOGIN_STATUS, Context.MODE_PRIVATE)
     var editor = sharedPreferences.edit()
@@ -112,7 +124,8 @@ fun SignupScreen(navController: NavController){
         , contentAlignment = Alignment.Center){
 
         Column(modifier = Modifier
-            .fillMaxWidth()) {
+            .fillMaxWidth()
+            .verticalScroll(scrollState)) {
 
 
             Box(modifier = Modifier
@@ -148,7 +161,11 @@ fun SignupScreen(navController: NavController){
                         , modifier = Modifier
                             .size(40.dp)
                             .clickable {
-                                galleryLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                                galleryLauncher.launch(
+                                    PickVisualMediaRequest(
+                                        ActivityResultContracts.PickVisualMedia.ImageOnly
+                                    )
+                                )
                             })
 
                 }
@@ -274,9 +291,29 @@ fun SignupScreen(navController: NavController){
                 .fillMaxWidth()
                 , contentAlignment = Alignment.Center){
                 Button(onClick = {
-                    Authentication.Signup(context,email,password,username,imageUri.toString(),navController)
-                    editor.putString(Keys.PROFILE_PIC_URI,imageUri.toString())
-                    editor.commit()
+
+                    coRoutineScope.launch {
+
+                        var profile = Profile(name=name, email = email, username = username, password = password, profileImageUri = "")
+
+                        try{
+
+                            var response = AuthApiInstance.api.signup(profile)
+                            if(response.isSuccessful){
+                                navController.navigate(Routes.DashboardScreen.route){
+                                    popUpTo(0)
+                                }
+                                editor.putBoolean(Keys.LOGIN_STATUS, true)
+                                editor.commit()
+                            }else{
+                                Log.d("SIGNUP_ERROR",response.body().toString())
+                            }
+                        }catch (e:Exception){
+                            e.printStackTrace()
+                        }
+                    }
+
+
                 }
                     , shape = RectangleShape
                     , modifier = Modifier

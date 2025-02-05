@@ -141,26 +141,10 @@ fun DashboardScreen(navController: NavController) {
             ) { index ->
                 when (index) {
                     0 -> {
-                        // Navigate to HomeScreen
-                        NavHost(
-                            navController = tabNavController,
-                            startDestination = Routes.HomeScreen.route
-                        ) {
-                            composable(Routes.HomeScreen.route) {
-                                HomeScreen()
-                            }
-                        }
+                        HomeScreen()
                     }
                     1 -> {
-                        // Navigate to ProfileScreen
-                        NavHost(
-                            navController = tabNavController,
-                            startDestination = Routes.ProfileScreen.route
-                        ) {
-                            composable(Routes.ProfileScreen.route) {
-                                ProfileScreen(navController = navController)
-                            }
-                        }
+                        ProfileScreen(navController = navController,name="Aditya Kelaskar",username="kelaskaraditya1")
                     }
                 }
             }
