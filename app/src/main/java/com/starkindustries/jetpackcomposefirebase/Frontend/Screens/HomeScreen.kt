@@ -189,13 +189,9 @@ fun HomeScreen() {
             }
             }
         , title = {
-            Box(modifier = Modifier
-                .fillMaxWidth()
-            , contentAlignment = Alignment.Center){
                 Text(text = "Add Note"
-                , fontSize = 25.sp
-                , fontWeight = FontWeight.W500)
-            }
+                    , fontSize = 25.sp
+                    , fontWeight = FontWeight.W500)
             })
     }
 
@@ -221,11 +217,6 @@ fun HomeScreen() {
                         isExpanded = expandedStates[note.noteId ?: -1] ?: false,
                         onExpandToggle = { isExpanded ->
                             expandedStates[note.noteId ?: -1] = isExpanded
-                        },
-                        onDelete = {
-                            CoroutineScope(Dispatchers.IO).launch {
-                                // Add delete logic if necessary
-                            }
                         },
                         context = context
                     )
