@@ -5,14 +5,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.lifecycle.lifecycleScope
-import com.starkindustries.jetpackcomposefirebase.Backend.Api.NotesApi.RetrofitInstance
 import com.starkindustries.jetpackcomposefirebase.Backend.Data.NotesRow
 import com.starkindustries.jetpackcomposefirebase.Frontend.Navigation.Navigation
-import com.starkindustries.jetpackcomposefirebase.Frontend.Screens.TestScreen
 import com.starkindustries.jetpackcomposefirebase.ui.theme.JetPackComposeFirebaseTheme
 
 class MainActivity : ComponentActivity() {

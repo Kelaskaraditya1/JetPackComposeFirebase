@@ -12,6 +12,8 @@ class Keys {
         const val NOTES="NOTES"
         const val PROFILE_PIC_URI="PROFILE_PIC_URI"
         const val BASE_URL = "https://notesappbackend-9.onrender.com/"
+        const val USERNAME="USERNAME"
+        const val JWT_TOKEN="JWT_TOKEN"
 
     }
 }

@@ -53,10 +53,12 @@ import com.starkindustries.jetpackcomposefirebase.Keys.Keys
 import com.starkindustries.jetpackcomposefirebase.R
 
 @Composable
-fun ProfileScreen(username:String,name:String,navController: NavController) {
+fun ProfileScreen(navController: NavController) {
     val context = LocalContext.current
     val sharedPreferences = context.getSharedPreferences(Keys.LOGIN_STATUS, Context.MODE_PRIVATE)
     val editor = sharedPreferences.edit()
+
+    val username = sharedPreferences.getString(Keys.USERNAME,"")
 
 
     // State variables
@@ -94,8 +96,7 @@ fun ProfileScreen(username:String,name:String,navController: NavController) {
                     contentDescription = "",
                     modifier = Modifier
                         .size(180.dp)
-                        .clip(CircleShape)
-                        .border(width = 1.dp, color = Color.Gray, shape = CircleShape),
+                        .clip(CircleShape),
                     contentScale = ContentScale.Crop
                 )
             } else {
@@ -105,31 +106,20 @@ fun ProfileScreen(username:String,name:String,navController: NavController) {
                     contentDescription = "Placeholder",
                     modifier = Modifier
                         .size(200.dp)
-                        .clip(CircleShape)
-                        .border(width = 1.dp, color = Color.Gray, shape = CircleShape),
+                        .clip(CircleShape),
                     contentScale = ContentScale.Crop
                 )
             }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-
-        // User Info
-        Text(text = name
-        , fontSize = 25.sp
-        , fontWeight = FontWeight.W500
-        , modifier = Modifier
-                .fillMaxWidth()
-        , textAlign = TextAlign.Center)
-
         Spacer(modifier = Modifier.height(10.dp))
 
-        Text(text = username,
-            fontSize = 18.sp
-        , fontWeight = FontWeight.W400
-        , modifier = Modifier
-                .fillMaxWidth()
-        , textAlign = TextAlign.Center)
+        if (username != null) {
+            Text(text = username,
+                fontSize = 22.sp, fontWeight = FontWeight.W500, modifier = Modifier
+                    .fillMaxWidth(), textAlign = TextAlign.Center)
+        }
 
         Spacer(modifier = Modifier.height(10.dp))
 
@@ -158,5 +148,5 @@ fun ProfileScreen(username:String,name:String,navController: NavController) {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 private fun ProfileScreenPreview() {
-    ProfileScreen("kelaskaraditya1","Aditya Kelaskar",rememberNavController())
+    ProfileScreen(rememberNavController())
 }

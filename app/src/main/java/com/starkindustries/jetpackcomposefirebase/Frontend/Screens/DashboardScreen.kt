@@ -144,7 +144,7 @@ fun DashboardScreen(navController: NavController) {
                         HomeScreen()
                     }
                     1 -> {
-                        ProfileScreen(navController = navController,name="Aditya Kelaskar",username="kelaskaraditya1")
+                        ProfileScreen(navController = navController)
                     }
                 }
             }

@@ -41,16 +41,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.starkindustries.jetpackcomposefirebase.Backend.Api.NotesApi.Note
 import com.starkindustries.jetpackcomposefirebase.Backend.Data.NotesRow
 import com.starkindustries.jetpackcomposefirebase.Backend.RealTime.RealTimeDatabase
 
 @Composable
 fun NoteRowCompose(
-    notesRow: NotesRow,
+    notesRow: Note,
     isExpanded: Boolean,
     onExpandToggle: (Boolean) -> Unit,
     onDelete:(noteId:String)->Unit,
-    user:FirebaseUser?=FirebaseAuth.getInstance().currentUser,
     context:Context) {
 
     var updateDialouge by remember{
@@ -108,7 +108,7 @@ fun NoteRowCompose(
                         , contentAlignment = Alignment.TopEnd){
                             Row(modifier = Modifier) {
                                 IconButton(onClick = {
-                                    notesRow.noteId?.let { onDelete(it) }
+                                    notesRow.noteId?.let { onDelete(it.toString()) }
                                 }) {
                                     Icon(imageVector = Icons.Default.Delete, contentDescription = "")
                                 }
@@ -211,19 +211,8 @@ fun NoteRowCompose(
                             title = updatedTitle,
                             timeStamp = updatedTimeStamp,
                             content = updatedContent,
-                            noteId = notesRow.noteId // Ensure the noteId is preserved
+                            noteId = notesRow.noteId.toString() // Ensure the noteId is preserved
                         )
-                        if (note.noteId != null) {
-                            if (user != null) {
-                                RealTimeDatabase.updateNote(user, note, note.noteId!!)
-                            }
-                        } else {
-                            Toast.makeText(
-                                context,
-                                "Error: Note ID is missing.",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
                         // Reset fields
                         updatedTitle = ""
                         updatedContent = ""
@@ -255,10 +244,6 @@ fun NoteRowCompose(
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
 fun NoteRowPreview(){
-    var user = FirebaseAuth.getInstance().currentUser
-    if (user != null) {
-        NoteRowCompose(notesRow = NotesRow(1,"The Hero's Sacrifice","2025-01-01","In the final battle against Thanos, Tony Stark made the ultimate sacrifice to save the universe. "), isExpanded = true, onExpandToggle ={}, onDelete = {},user,
-            LocalContext.current.applicationContext)
-    }
+
 }
 

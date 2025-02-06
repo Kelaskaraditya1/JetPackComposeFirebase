@@ -179,8 +179,10 @@ fun LoginScreen(navController: NavController){
                                     popUpTo(0)
                                 }
                                 Log.d("LOGIN_SUCCESS",response.body().toString())
+                                editor.putString(Keys.JWT_TOKEN,response.body().toString())
                                 editor.putBoolean(Keys.LOGIN_STATUS, true)
-                                editor.commit()
+                                editor.putString(Keys.USERNAME,username)
+                                editor.apply()
                             }else{
                                 Log.d("LOGIN_ERROR",response.body().toString())
                             }
