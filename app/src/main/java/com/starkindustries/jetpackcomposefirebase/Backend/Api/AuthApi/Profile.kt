@@ -5,7 +5,7 @@ data class Profile(
     var email: String = "",
     var name: String = "",
     var password: String,
-    var profileImageUri: String = "",
+    var profilePicUrl: String = "",
     var username: String
 )
 

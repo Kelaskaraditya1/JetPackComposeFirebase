@@ -42,7 +42,7 @@ fun TestScreen(){
     , contentAlignment = Alignment.Center){
         Column {
             Button(onClick = {
-                var profile = Profile(name="Sandesh Jadhav", email = "sandy1@gmail.com", password = "sandy@1234", username = "sandy1", profileImageUri = "")
+                var profile = Profile(name="Sandesh Jadhav", email = "sandy1@gmail.com", password = "sandy@1234", username = "sandy1", profilePicUrl   = "")
 
                 coroutineScope.launch {
                     try {

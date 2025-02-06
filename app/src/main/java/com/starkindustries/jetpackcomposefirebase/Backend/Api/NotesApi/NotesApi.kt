@@ -1,14 +1,18 @@
 package com.starkindustries.jetpackcomposefirebase.Backend.Api.NotesApi
 
+import com.starkindustries.jetpackcomposefirebase.Backend.Api.AuthApi.Profile
 import com.starkindustries.jetpackcomposefirebase.Backend.Data.NotesRow
+import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.HEAD
 import retrofit2.http.Header
+import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Part
 import retrofit2.http.Path
 
 interface NotesApi {
@@ -24,5 +28,7 @@ interface NotesApi {
 
     @DELETE("notes/delete-note/{noteId}")
     suspend fun deleteNote(@Path("noteId") noteId:Int,@Header("Authorization") jwtToken: String):Response<String>
+
+
 
 }

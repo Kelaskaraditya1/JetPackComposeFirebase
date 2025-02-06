@@ -2,6 +2,7 @@ package com.starkindustries.jetpackcomposefirebase.Frontend.Screens
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import android.widget.Space
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -23,6 +24,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,6 +48,8 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.rpc.context.AttributeContext.Auth
+import com.starkindustries.jetpackcomposefirebase.Backend.Api.AuthApi.AuthApiInstance
+import com.starkindustries.jetpackcomposefirebase.Backend.Api.AuthApi.Profile
 import com.starkindustries.jetpackcomposefirebase.Backend.Authentication.Authentication
 import com.starkindustries.jetpackcomposefirebase.Backend.RealTime.RealTimeDatabase
 import com.starkindustries.jetpackcomposefirebase.Frontend.Routes.Routes
@@ -60,9 +64,36 @@ fun ProfileScreen(navController: NavController) {
 
     val username = sharedPreferences.getString(Keys.USERNAME,"")
 
+    var coroutineScope = rememberCoroutineScope()
+
+    var profile by remember{
+        mutableStateOf<Profile?>(null)
+    }
+
+    var imageUrl by remember {
+        mutableStateOf("")
+    }
+
+
+    LaunchedEffect(Unit) {
+        try{
+            username?.let {
+                var profile1 =AuthApiInstance.api.getUserByUsername(it)
+                if(profile1.isSuccessful){
+                    profile=profile1.body()
+                    imageUrl=profile?.profilePicUrl!!
+                    Log.d("PROFILE",profile1.body().toString())
+                }
+                else
+                    Log.d("PROFILE_ERROR",profile1.message().toString())
+            }
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+    }
+
 
     // State variables
-    var imageUri by remember { mutableStateOf("") }
 
     // Fetch user data
 //    val firebaseUser = FirebaseAuth.getInstance().currentUser
@@ -90,9 +121,9 @@ fun ProfileScreen(navController: NavController) {
                 .padding(top = 15.dp),
             contentAlignment = Alignment.Center
         ) {
-            if (imageUri.isNotEmpty()) {
+            if (!imageUrl.isEmpty()) {
                 Image(
-                    painter = rememberAsyncImagePainter(model = imageUri),
+                    painter = rememberAsyncImagePainter(model = imageUrl),
                     contentDescription = "",
                     modifier = Modifier
                         .size(180.dp)

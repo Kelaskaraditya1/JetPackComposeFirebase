@@ -63,9 +63,52 @@ import com.starkindustries.jetpackcomposefirebase.Frontend.Navigation.Navigation
 import com.starkindustries.jetpackcomposefirebase.Frontend.Routes.Routes
 import com.starkindustries.jetpackcomposefirebase.Keys.Keys
 import com.starkindustries.jetpackcomposefirebase.R
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+
+import com.starkindustries.jetpackcomposefirebase.Backend.Utility.getFileFromUri
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+
+import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import retrofit2.HttpException
+import java.io.File
+import java.io.IOException
+
+fun uploadProfilePicture(context: Context, imageUri: Uri, username: String, onResult: (Profile?) -> Unit) {
+    CoroutineScope(Dispatchers.IO).launch {
+        try {
+            val file: File = getFileFromUri(context, imageUri) ?: throw Exception("File conversion failed")
+
+            val requestBody = RequestBody.create("image/*".toMediaTypeOrNull(), file)
+            val multipartBody = MultipartBody.Part.createFormData("image", file.name, requestBody)
+
+            val response = AuthApiInstance.api.uploadProfilePic(username, multipartBody)
+
+            if (response.isSuccessful) {
+                Log.d("PROFILE_PIC_UPLOAD", "Upload Successful: ${response.body()}")
+                onResult(response.body()) // Pass success response
+            } else {
+                val errorBody = response.errorBody()?.string()
+                Log.e("PROFILE_PIC_UPLOAD", "Upload Failed: HTTP ${response.code()} - $errorBody")
+                onResult(null) // Handle failure
+            }
+        } catch (e: HttpException) {
+            Log.e("PROFILE_PIC_UPLOAD", "HttpException: ${e.message}")
+            onResult(null)
+        } catch (e: IOException) {
+            Log.e("PROFILE_PIC_UPLOAD", "IOException: ${e.message}")
+            onResult(null)
+        } catch (e: Exception) {
+            Log.e("PROFILE_PIC_UPLOAD", "Exception: ${e.message}")
+            onResult(null)
+        }
+    }
+}
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -294,12 +337,23 @@ fun SignupScreen(navController: NavController){
 
                     coRoutineScope.launch {
 
-                        var profile = Profile(name=name, email = email, username = username, password = password, profileImageUri = "")
+                        var profile = Profile(name=name, email = email, username = username, password = password, profilePicUrl = "")
 
                         try{
 
                             var response = AuthApiInstance.api.signup(profile)
                             if(response.isSuccessful){
+
+                                if(imageUri==null)
+                                    Toast.makeText(context, "Pick an image from your gallery first!!", Toast.LENGTH_SHORT).show()
+                                else{
+                                    Log.d("IMAGE_URI",imageUri.toString())
+                                    uploadProfilePicture(context=context,imageUri=imageUri!!, username = username){ profile ->
+                                        editor.putString(Keys.USERNAME,username)
+                                        editor.apply()
+                                        Log.d("PROFILE_PIC_UPLOAD",profile.toString())
+                                    }
+                                }
                                 navController.navigate(Routes.DashboardScreen.route){
                                     popUpTo(0)
                                 }
