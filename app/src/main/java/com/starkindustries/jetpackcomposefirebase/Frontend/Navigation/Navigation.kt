@@ -13,6 +13,7 @@ import com.starkindustries.jetpackcomposefirebase.Frontend.Screens.LoginScreen
 import com.starkindustries.jetpackcomposefirebase.Frontend.Screens.ProfileScreen
 import com.starkindustries.jetpackcomposefirebase.Frontend.Screens.SignupScreen
 import com.starkindustries.jetpackcomposefirebase.Frontend.Screens.SplashScreen
+import com.starkindustries.jetpackcomposefirebase.Frontend.Screens.VideoCallStream
 
 @Composable
 fun Navigation(){
@@ -38,6 +39,9 @@ fun Navigation(){
         }
         composable(Routes.ProfileScreen.route){
             ProfileScreen(navController = navController)
+        }
+        composable(Routes.VideoCallScreen.route){
+            VideoCallStream(navController)
         }
     }
 }

@@ -14,6 +14,7 @@ class Keys {
         const val BASE_URL = "https://notesappbackend-9.onrender.com/"
         const val USERNAME="USERNAME"
         const val JWT_TOKEN="JWT_TOKEN"
+        const val VIDEO_CALL_ROUTE="VIDEO_CALL_SCREEN"
 
     }
 }

@@ -9,4 +9,5 @@ sealed class Routes(var route:String) {
     object DashboardScreen:Routes(Keys.DASHBOARD_SCREEN_ROUTE)
     object HomeScreen:Routes(Keys.HOME_SCREEN_ROUTE)
     object ProfileScreen:Routes(Keys.PROFILE_SCREEN_ROUTE)
+    object VideoCallScreen:Routes(Keys.VIDEO_CALL_ROUTE)
 }

@@ -29,7 +29,7 @@ class Authentication {
                 if (it.isSuccessful) {
                     editor.putBoolean(Keys.LOGIN_STATUS, true)
                     editor.apply()
-                    navController.navigate(Routes.DashboardScreen.route) {
+                    navController.navigate(Routes.VideoCallScreen.route) {
                         popUpTo(0)
                     }
 
@@ -94,7 +94,7 @@ class Authentication {
                                                 Log.d("Signup", "User profile created successfully!")
                                                 editor.putBoolean(Keys.LOGIN_STATUS, true)
                                                 editor.apply()
-                                                navController.navigate(Routes.DashboardScreen.route) {
+                                                navController.navigate(Routes.VideoCallScreen.route) {
                                                     popUpTo(0)
                                                 }
                                             }

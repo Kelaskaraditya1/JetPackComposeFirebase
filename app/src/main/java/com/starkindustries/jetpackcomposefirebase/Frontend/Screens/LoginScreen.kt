@@ -166,33 +166,32 @@ fun LoginScreen(navController: NavController){
             , contentAlignment = Alignment.Center){
                 Button(onClick = {
 
-                    var profile = Profile(username = username, password = password)
-                    Log.d("LOGIN_DEBUG", "Attempting login with Username: $username, Password: $password")
-
-                    coroutineScope.launch {
-
-                        var profile = Profile(username=username, password = password)
-                        try{
-                            var response = AuthApiInstance.api.login(profile)
-                            if(response.isSuccessful){
-                                navController.navigate(Routes.DashboardScreen.route){
-                                    popUpTo(0)
-                                }
-                                Log.d("LOGIN_SUCCESS",response.body().toString())
-                                editor.putString(Keys.JWT_TOKEN,response.body().toString())
-                                editor.putBoolean(Keys.LOGIN_STATUS, true)
-                                editor.putString(Keys.USERNAME,username)
-                                editor.apply()
-                            }else{
-                                Log.d("LOGIN_ERROR",response.body().toString())
-                            }
-                        }catch (e:Exception){
-                            e.printStackTrace()
-                        }
-
-                    }
-
-
+//                    var profile = Profile(username = username, password = password)
+//                    Log.d("LOGIN_DEBUG", "Attempting login with Username: $username, Password: $password")
+//
+//                    coroutineScope.launch {
+//
+//                        var profile = Profile(username=username, password = password)
+//                        try{
+//                            var response = AuthApiInstance.api.login(profile)
+//                            if(response.isSuccessful){
+//                                navController.navigate(Routes.DashboardScreen.route){
+//                                    popUpTo(0)
+//                                }
+//                                Log.d("LOGIN_SUCCESS",response.body().toString())
+//                                editor.putString(Keys.JWT_TOKEN,response.body().toString())
+//                                editor.putBoolean(Keys.LOGIN_STATUS, true)
+//                                editor.putString(Keys.USERNAME,username)
+//                                editor.apply()
+//                            }else{
+//                                Log.d("LOGIN_ERROR",response.body().toString())
+//                            }
+//                        }catch (e:Exception){
+//                            e.printStackTrace()
+//                        }
+//
+//                    }
+                    Authentication.LoginFunction(context=context, email = username,password=password,navController=navController)
                 }
                     , shape = RectangleShape
                     , modifier = Modifier

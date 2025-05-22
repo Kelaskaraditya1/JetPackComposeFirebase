@@ -335,38 +335,39 @@ fun SignupScreen(navController: NavController){
                 , contentAlignment = Alignment.Center){
                 Button(onClick = {
 
-                    coRoutineScope.launch {
+//                    coRoutineScope.launch {
+//
+//                        var profile = Profile(name=name, email = email, username = username, password = password, profilePicUrl = "")
+//
+//                        try{
+//
+//                            var response = AuthApiInstance.api.signup(profile)
+//                            if(response.isSuccessful){
+//
+//                                if(imageUri==null)
+//                                    Toast.makeText(context, "Pick an image from your gallery first!!", Toast.LENGTH_SHORT).show()
+//                                else{
+//                                    Log.d("IMAGE_URI",imageUri.toString())
+//                                    uploadProfilePicture(context=context,imageUri=imageUri!!, username = username){ profile ->
+//                                        editor.putString(Keys.USERNAME,username)
+//                                        editor.apply()
+//                                        Log.d("PROFILE_PIC_UPLOAD",profile.toString())
+//                                    }
+//                                }
+//                                navController.navigate(Routes.DashboardScreen.route){
+//                                    popUpTo(0)
+//                                }
+//                                editor.putBoolean(Keys.LOGIN_STATUS, true)
+//                                editor.commit()
+//                            }else{
+//                                Log.d("SIGNUP_ERROR",response.body().toString())
+//                            }
+//                        }catch (e:Exception){
+//                            e.printStackTrace()
+//                        }
+//                    }
 
-                        var profile = Profile(name=name, email = email, username = username, password = password, profilePicUrl = "")
-
-                        try{
-
-                            var response = AuthApiInstance.api.signup(profile)
-                            if(response.isSuccessful){
-
-                                if(imageUri==null)
-                                    Toast.makeText(context, "Pick an image from your gallery first!!", Toast.LENGTH_SHORT).show()
-                                else{
-                                    Log.d("IMAGE_URI",imageUri.toString())
-                                    uploadProfilePicture(context=context,imageUri=imageUri!!, username = username){ profile ->
-                                        editor.putString(Keys.USERNAME,username)
-                                        editor.apply()
-                                        Log.d("PROFILE_PIC_UPLOAD",profile.toString())
-                                    }
-                                }
-                                navController.navigate(Routes.DashboardScreen.route){
-                                    popUpTo(0)
-                                }
-                                editor.putBoolean(Keys.LOGIN_STATUS, true)
-                                editor.commit()
-                            }else{
-                                Log.d("SIGNUP_ERROR",response.body().toString())
-                            }
-                        }catch (e:Exception){
-                            e.printStackTrace()
-                        }
-                    }
-
+                    Authentication.Signup(context = context,email=email,password=password, userName = username, profileImageUri = "", navController = navController)
 
                 }
                     , shape = RectangleShape

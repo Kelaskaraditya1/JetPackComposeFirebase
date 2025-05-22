@@ -81,5 +81,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.github.ZEGOCLOUD:zego_uikit_prebuilt_call_android:1.0.2")
+    implementation("com.guolindev.permissionx:permissionx:1.8.0")
 
 }
